@@ -1,0 +1,43 @@
+How to Install VirtualBox Guest Additions in RHEL 8 
+
+1.First start by enabling the EPEL repository on your RHEL 8 guest operating system to install some required packages needed for the installation process as shown. 
+
+ 
+Install and Enable EPEL Repository on RHEL 8.x Server 
+
+Login or ssh to your RHEL 8.x server and execute the following dnf command AS ROOT or SUDO to install EPEL rpm package, 
+
+# dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm -y 
+
+Once epel rpm package is installed successfully then it will automatically enable and configure its yum / dnf repository.  Run following dnf or yum command to verify whether EPEL repository is enabled or not, 
+
+# dnf repolist epel -v 
+
+# dnf -y upgrade   
+
+# dnf -y install epel-release 
+
+ 
+
+2. Next, update each package on your guest system including the kernel to the latest version that is both available and resolvable, as shown. Once the upgrade process is done, reboot your system to complete the upgrade process and start using the new kernel. 
+
+# dnf -y update    
+
+3. Once update process completes, install all kernel headers, developer tools and other related packages that are required for installing the guest additions from source as shown. 
+
+# dnf install make gcc kernel-headers kernel-devel perl dkms bzip2 
+
+ 
+
+4. Next, set the KERN_DIR environment variable to kernel source code directory (/usr/src/kernels/$(uname -r)) and export it at the same time as shown. 
+
+# export KERN_DIR=/usr/src/kernels/$(uname -r) 
+
+5. Now, you can mount the Guest Additions ISO and run the installer in two ways: 
+
+Install Guest Additions via a GUI 
+
+If you have a desktop environment installed, use this option, from the Virtual machine menu bar, go to Devices => click on Insert Guest Additions CD image to mount the Guest Additions ISO file in your guest OS. 
+ 
+
+A dialog window will open up, asking you to Run the installer, click on the Run to execute it. This will in turn open a terminal which shows the installation details (follow the on-screen instructions). 
