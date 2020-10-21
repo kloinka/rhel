@@ -1,0 +1,11 @@
+Software repositories are usually used over the internet and can be accessed by multiple users worldwide. However, you can create your own local repository on your local server and use it as a single user, or allow access to other machines on your LAN using an HTTP web server or FTP. 
+
+The advantage of creating a local repository is that you don’t require an internet connection to install software packages or updates.  
+
+Another benefit is, of course, the download speed. Since the packages are downloaded via a local network, the updates perform quickly. 
+
+Yellowdog Updater, Modified (YUM) or Dandified YUM (DNF) are software package managers that manage the RPM-based Linux distributions. With YUM or DNF, you can install and update groups of computers without having to manually update each one using RPM. 
+
+We will explain how to set up a local YUM/DNF repository on Red Hat Enterprise Linux (RHEL) 8 using the installation DVD or ISO file. 
+
+https://docs.centos.org/en-US/8-docs/advanced-install/
