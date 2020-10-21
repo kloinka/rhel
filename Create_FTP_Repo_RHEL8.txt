@@ -1,0 +1,260 @@
+Prerequisites 
+
+You will need to set up two machines with Red Hat Enterprise Linux 8 systems, one local repo server, and one client machine that will use the local repository from the local server. For example: 
+
+Local Repository Server: RHEL 8 [10.0.0.10] 
+
+Local Client Machine: RHEL 8 [10.0.0.11] 
+
+RHEL 8 installation DVD 
+
+vsftpd FTP server 
+
+Create your repository 
+
+Creating your repository involves a number of steps. 
+
+Step 1: Mount the Red Hat Enterprise Linux 8 media 
+
+First, mount the local media (the DVD, USB stick, etc.) that contains Red Hat Enterprise Linux 8. Use the installation DVD: 
+
+$ sudo mount /dev/cdrom /mnt  
+mount: /mnt: WARNING: device write-protected, mounted read-only. 
+ 
+
+Or mount the ISO image: 
+
+$ sudo mount -o loop rhel-8.0-x86_64-dvd.iso /mnt 
+ 
+
+Step 2: Create a local YUM repository from the mounted media 
+
+Move the existing repo files located in /etc/yum.repos.d: 
+
+$ sudo mv /etc/yum.repos.d/*.repo /tmp/ 
+ 
+
+From this point, it is better if you continue as the root user. Switch to superuser with su command. 
+
+Next, create a directory for the repo: 
+
+# mkdir /local_repo 
+ 
+
+Use this directory with vsftpd for serving files over the LAN. 
+
+Create the new local repository’s configuration file local-dvdrom.repo under the /etc/yum.repos.d directory: 
+
+# touch /etc/yum.repos.d/local-dvdrom.repo 
+# chmod u+rw,g+r,o+r /etc/yum.repos.d/local-dvdrom.repo 
+ 
+
+Step 3: Copy media content to the local directory 
+
+Copy the ISO files locally under the /local_repo directory: 
+
+# cd /mnt 
+# tar cvf - . | (cd /local_repo/; tar xvf -) 
+ 
+
+Wait until the files are copied, then verify the files were copied using: 
+
+# ls -l /local_repo/ 
+ 
+
+Step 4: Configure the local YUM/DNF repository 
+
+Edit the repo configuration file you created earlier: 
+
+# vim /etc/yum.repos.d/local-dvdrom.repo 
+ 
+
+Paste this configuration into it: 
+
+[LocalRepo_BaseOS] 
+name=LocalRepo_BaseOS 
+metadata_expire=-1 
+enabled=1 
+gpgcheck=1 
+baseurl=file:///local_repo/BaseOS/ 
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release 
+ 
+[LocalRepo_AppStream] 
+name=LocalRepo_AppStream 
+metadata_expire=-1 
+enabled=1 
+gpgcheck=1 
+baseurl=file:///local_repo/AppStream/ 
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release 
+ 
+
+Install the required packages for creating, configuring and managing the local repository: 
+
+# yum repolist 
+ 
+ 
+# yum install createrepo yum-utils 
+ 
+
+Finally, run the createrepo command: 
+
+# createrepo /local_repo/ 
+ 
+
+Step 5: Test and verify your local repository 
+
+In this step, you clean up the temporary repository files and verify that the local repository is enabled: 
+
+# yum clean all 
+ 
+# yum repolist 
+ 
+
+Verify that the local repository was created: 
+
+# ls /local_repo/repodata/ 
+ 
+
+You can see that the local repository generated files, so everything is ok at this point. 
+
+If you read the above command output carefully, you are getting the warning message, This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register. If you want to suppress or prevent this message while running the dnf or yum command then edit the file /etc/yum/pluginconf.d/subscription-manager.conf: 
+
+# vim /etc/yum/pluginconf.d/subscription-manager.conf 
+ 
+
+and change the parameter enabled=1 to enabled=0: 
+
+[main] 
+enabled=0 
+ 
+
+Set up your FTP server 
+
+As mentioned before, this article covers setting up your own repository using an FTP server (in this case, vsftpd). I'll walk you through installing and configuring vsftpd to serve your repo. 
+
+Install vsftpd 
+
+To set up your FTP server to handle your rep, first install vsftpd: 
+
+# yum install vsftpd 
+ 
+
+Configure vsftpd to auto-start at boot 
+
+Once vsftpd is installed, start and enable the service to auto-start at boot and verify its status using the following commands: 
+
+# systemctl start vsftpd 
+ 
+# systemctl enable vsftpd 
+ 
+# systemctl status vsftp 
+
+ 
+
+Configure the firewall 
+
+Next, you must configure the firewall so that vsftpd can be reached: 
+
+# firewall-cmd --permanent --add-port=21/tcp 
+ 
+# firewall-cmd --reload 
+ 
+
+ 
+
+Verify that vsftpd is up and running 
+
+You can now verify that your FTP server is up and running by using an FTP client to connect tolocalhost. For example: 
+
+First install ftp client 
+
+# yum install ftp 
+
+Then 
+
+ 
+
+$ ftp localhost 
+ 
+
+Configure vsftpd 
+
+To configure vsftpd, open the configuration file: 
+
+# vim /etc/vsftpd/vsftpd.conf  
+ 
+
+When opened, change the following: 
+
+anonymous_enable=YES 
+# 
+# Uncomment this to allow local users to log in. 
+# When SELinux is enforcing check for SE bool ftp_home_dir 
+local_enable=YES 
+# 
+# Uncomment this to enable any form of FTP write command. 
+write_enable=NO 
+ 
+
+Add the following line anywhere in the configuration file: 
+
+local_root=/local_repo 
+ 
+
+Test and clean up 
+
+Finally, restart and test the vsftpd service: 
+
+# systemctl restart vsftpd 
+ 
+# systemctl status vsftpd 
+ 
+
+Change permissions and set SELinux 
+
+Continue the security configuration by changing the permissions on the local_repo directory and configuring SELinux. To change the permissions: 
+
+# setfacl -R -m u:root:rwx /local_repo/ 
+ 
+
+Then, check if SELinux is enforcing: 
+
+# getenforce 
+ 
+ 
+
+If it is Enforcing, type: 
+
+# chcon -Rt public_content_t /local_repo/ 
+ 
+
+Set up the client 
+
+Now, to configure the Red Hat Enterprise Linux 8 client machine’s repository. 
+
+Add the repos 
+
+On the client machine, add the local repos from the server to the client’s YUM configuration: 
+
+$ sudo vim /etc/yum.repos.d/local-rhel8.repo  
+ 
+
+Then paste the following configuration (be sure to change the server IP address according to your setup): 
+
+[LocalServerRepo] 
+name=LocalServerRepo 
+enabled=1 
+gpgcheck=0 
+baseurl=ftp://10.0.0.10/ 
+ 
+
+Test the repo 
+
+Test the LocalServerRepo by installing a package. For example: 
+
+$ yum repolist 
+ 
+$ sudo yum install nano 
+ 
+
+That’s all! You now have an FTP-based local YUM/DNF repository in Red Hat Enterprise Linux 8, using the installation DVD or ISO file. 
