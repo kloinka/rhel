@@ -1,0 +1,109 @@
+ifconfig
+ping 10.0.10.1
+ping 8.8.8.8
+ping google.com
+hostname
+clear
+sudo dnf install -y dnsmasq
+sudo mv -v /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
+gedit /etc/dnsmasq.conf
+mkdir -pv /netboot/tftp/pxelinux.cfg
+systemctl status dnsmasq
+systemctl enable dnsmasq
+systemctl status dnsmasq
+systemctl start dnsmasq
+systemctl status dnsmasq
+gedit /etc/dnsmasq.conf
+ip a s
+systemctl restart dnsmasq
+systemctl status dnsmasq
+systemctl restart dnsmasq
+systemctl status dnsmasq
+systemctl stop dnsmasq
+sudo dnf makecache
+sudo dnf update
+sudo dnf reinstall dnsmasq
+systemctl restart dnsmasq
+systemctl status dnsmasq
+ip a s
+systemctl restart dnsmasq
+systemctl status dnsmasq
+sudo dnsmasq --test
+setenforce 0
+systemctl restart dnsmasq
+systemctl status dnsmasq
+systemctl restart dnsmasq
+systemctl status dnsmasq
+sudo dnf install -y syslinux
+cp -v /usr/share/syslinux/{pxelinux.0,menu.c32,ldlinux.c32,libutil.c32}
+cp -v /usr/share/syslinux/{pxelinux.0,menu.c32,ldlinux.c32,libutil.c32} /netboot/tftp/
+sudo dnf install -y httpd
+ln -s /var/www/html /netboot/www
+systemctl status httpd
+systemctl enable httpd
+systemctl start httpd
+systemctl status httpd
+mkdir -v /netboot/{tftp,www}/RHEL8
+rsync -avz /run/media/root/RHEL-8-1-0-BaseOS-x86_64/ /netboot/www/RHEL8
+sudo cp -v /netboot/www/RHEL8/images/pxeboot/{initrd.img,vmlinuz} /netboot/tftp/RHEL8/
+gedit /netboot/tftp/pxelinux.cfg/default
+cls
+clear
+firewall-cmd --add-service={dhcp,http,tftp} --permanent
+firewall-cmd --add-port={4011/udp,69/udp} --permanent
+firewall-cmd --reload
+ip a s
+systemctl status dnsmasq.service 
+systemctl restart dnsmasq.service 
+systemctl status dnsmasq.service 
+sudo dnsmasq --test
+vim /etc/init.d/dnsmasq
+systemctl status dnsmasq.service 
+dnf reinstall -y dnsmasq
+dnf update
+systemctl status dnsmasq.service 
+setenforce 0
+systemctl status dnsmasq.service 
+systemctl restart dnsmasq.service 
+systemctl status dnsmasq.service 
+systemctl status vsftpd.service
+ssh root@10.0.10.184
+systemctl status dnsmasq.service 
+clear
+ssh root@10.0.10.124
+scp root@10.0.10.124:/root/anaconda-ks.cfg /Documents/.
+cd Documents/
+scp root@10.0.10.124:/root/anaconda-ks.cfg .
+hostname
+date
+ftp localhost
+ls -a
+clear
+ls -a
+clear
+ls -l /netboot/tftp/
+cat /netboot/tftp/pxelinux.cfg/default 
+hostname
+ifconfig -a
+ping 10.0.10.1
+ping google.com
+clear
+yum repolist
+yum install vsftp
+yum install vsftpd
+yum install httpd
+yum install vsftpd
+yum install httpd
+clear
+systemctl status dnsmasq.service 
+systemctl status vsftpd.service 
+systemctl status httpd.service 
+firewall-cmd --list-all
+sestatus
+firewall-cmd --list-all
+firewall-cmd --add-service=ftp --permanant
+firewall-cmd --add-service=ftp --permanent
+firewall-cmd --list-all
+firewall-cmd --reload
+firewall-cmd --list-all
+ping 10.0.10.254
