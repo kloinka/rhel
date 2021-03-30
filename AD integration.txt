@@ -1,0 +1,27 @@
+#check if firewalld is running
+sudo systemctl status firewalld.service
+# which ports are open
+sudo firewall-cmd --list-all
+# to permenantly ope a port * use the zone that is activefirewall-cmd --reload
+sudo firewall-cmd --zone=public --permanent --add-port 53/tcp
+sudo firewall-cmd --zone=public --permanent --add-port 53/udp
+sudo firewall-cmd --zone=public --permanent --add-port 389/tcp
+sudo firewall-cmd --zone=public --permanent --add-port 389/udp
+sudo firewall-cmd --zone=public --permanent --add-port 389/tcp
+sudo firewall-cmd --zone=public --permanent --add-port 389/udp
+sudo firewall-cmd --zone=public --permanent --add-port 464/tcp
+sudo firewall-cmd --zone=public --permanent --add-port 464/udp
+sudo firewall-cmd --zone=public --permanent --add-port 3268/tcp
+sudo firewall-cmd --zone=public --permanent --add-port 123/tcp
+#check firewall rules have been applied
+sudo firewall-cmd --list-all
+#reload firewalld
+sudo firewall-cmd --reload
+#install RHEL System Security Services Daemon (SSSD)
+sudo yum install realmd oddjob oddjob-mkhomedir sssd adcli krb5-workstation
+#Critical! Ensure that you are using the AD domain controller server for DNS
+#Configure the local RHEL system with the realm join command. The realmd suite edits all required configuration files automatically. 
+#For example, for a domain named ad.example.com:
+sudo realm join ad.example.com
+#Verification steps-Display an AD user details, such as the administrator user:
+sudo getent passwd administrator@ad.example.com
