@@ -2,7 +2,7 @@
 sudo systemctl status firewalld.service
 # which ports are open
 sudo firewall-cmd --list-all
-# to permenantly ope a port * use the zone that is activefirewall-cmd --reload
+# to permenantly open a port * use the zone that is active
 sudo firewall-cmd --zone=public --permanent --add-port 53/tcp
 sudo firewall-cmd --zone=public --permanent --add-port 53/udp
 sudo firewall-cmd --zone=public --permanent --add-port 389/tcp
