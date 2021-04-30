@@ -1,0 +1,118 @@
+# How to use tar to backup and restore folders and servers #
+----------------------------
+The tar command also known as a "tape archive" is used to compress files and folders in Linux operating systems. 
+It creates a tar archive by converting a group of files or directories into a single compressed file. 
+It allows you to decompress the tar archive, print a list of all files included in the archive and also add an additional 
+file to the archive. Generally, the tar command is used by the system administrator to create and restore a backup on the server.
+-----------------------------
+Table of Contents
+----------------------------
+Tar Command Syntax
+Create a Tar Archive
+Create a Tar Bz2 Archive
+Create a Tar Gzip Archive
+List Content of Tar Archive
+Extract a Tar Archive
+Extract a Tar Gzip Archive
+Extract a Tar Bz2 Archive
+Extract a Tar Archive in a Different Directory
+Add and Remove a File from a Tar Archive
+Extract Multiple Files from the Tar Archive
+-----------------------------
+# Tar Command Syntax
+The basic syntax of the tar command is shown below:
+
+tar [option] [archive-name] [files or directories]
+A brief explanation of each option is shown below:
+
+-c : Used to create a tar archive.
+-x : Used to extract from the tar archive.
+-t : Used to display a list of files inside tar archive.
+-r : Used to add an additional file in the tar archive.
+-W : Used to verify a tar archive.
+-z : Used to create a tar archive using gzip.
+-j : Used to create a tar archive using bzip.
+-v : Used to display verbose information.
+-f : Used to specify archive file name.
+--------------------------------------
+# Create a Tar Archive
+To create a tar archive named compress-file.tar from a single file named file1.txt, run the following command:
+
+tar -cf compress-file.tar file1.txt
+To create a tar archive named compress-file.tar from multiple files named file1.txt, file2.txt and file3.txt, run the following command:
+
+tar -cf compress-file.tar file1.txt file2.txt file3.txt
+If you want to create a tar archive of any directory, run the following command:
+
+tar -cf compress-dir.tar dir1
+This will create a tar archive named compress-dir.tar from a directory dir1.
+--------------------------------------
+# Create a Tar Bz2 Archive
+You can also compress a tar file using a bz2 algorithm. You will need to specify tar.bz2 at the end of the archive name.
+
+The following command will create a tar.bz2 archive from the directory /etc.
+
+tar -cjf compress.tar.bz2 /etc
+You can also specify -v option to display the compression process in verbose.
+--------------------------------------
+# Create a Tar Gzip Archive
+You can use the -z option with the tar command to create a tar archive in gzip format.
+
+The following command will create a tar.gz archive from the /usr directory.
+
+tar -cxf compress.tar.gz /usr
+--------------------------------------
+# List Content of Tar Archive
+You can use the option -t with the tar command to display a list of content available in the tar archive file.
+
+The following example will display a list of content inside the compress-dir.tar file:
+
+tar -tvf compress-dir.tar
+--------------------------------------
+# Extract a Tar Archive
+You can use the option -x with the tar command to uncompress the tar archive.
+
+For example, run the following command to uncompress a compress-dir.tar file:
+
+tar -xvf compress-dir.tar
+If you want to extract a single file named file1.txt from the compress-dir.tar file, run the following command:
+
+tar -xvf compress-dir.tar file1.txt
+--------------------------------------
+# Extract a Tar Gzip Archive
+You can use the option -z with the tar command to extract or uncompress the Gzip archive file.
+
+For example, run the following command to extract the compress.tar.gz archive file:
+
+tar -xzvf compress.tar.gz
+--------------------------------------
+# Extract a Tar Bz2 Archive
+You can use the option -j with the tar command to extract from the Bz2 archive.
+
+For example, run the following command to extract the compress.tar.bz2 archive file.
+
+tar -xjvf compress.tar.bz2
+--------------------------------------
+# Extract a Tar Archive in a Different Directory
+When you extract any tar archive it will extract the archive contents in the current directory. You can use the option -C with the tar command to extract the tar archive to the specified directory.
+
+For example, run the following command to extract the compress-dir.tar content to /opt directory:
+
+tar -xvf compress-dir.tar -C /opt
+--------------------------------------
+# Add and Remove a File from a Tar Archive
+You can also add and remove specific files and directories to an existing tar archive. You can use the option -r to add a file to a tar archive and use the option --delete to delete a file from the tar archive.
+
+For example, to add a new file named file6.txt to the archive name compress-dir.tar, run the following command:
+
+tar -rvf compress-dir.tar file6.txt
+To remove a file named file1.txt from the archive named compress-dir.tar, run the following command:
+
+tar --delete -f compress-dir.tar file1.txt
+--------------------------------------
+# Extract Multiple Files from the Tar Archive
+You can use a wildcard to extract a group of files from the tar archive.
+
+For example, extract all files that match the pattern .html from the archive compress.tar.gz use the following command:
+
+tar -xvzf compress.tar.gz --wildcards  '*.html'
